@@ -6,7 +6,7 @@ import os
 import wandb
 import hydra
 from omegaconf import DictConfig
-# comment 
+# commit2 
 _steps = [
     "download",
     "basic_cleaning",
