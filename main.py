@@ -32,6 +32,9 @@ def go(config: DictConfig):
     steps_par = config['main']['steps']
     active_steps = steps_par.split(",") if steps_par != "all" else _steps
 
+    # Get the original working directory
+    root_path= hydra.utils.get_original_cwd()
+
     # Move to a temporary directory
     with tempfile.TemporaryDirectory() as tmp_dir:
 
@@ -54,18 +57,43 @@ def go(config: DictConfig):
             ##################
             # Implement here #
             ##################
+            _ = mlflow.run(
+                os.path.join(root_path, "src", "basic_cleaning"),
+                "main",
+                parameters={
+                    "input_artifact": "nyc_airbnb/sample.csv:latest",
+                    "output_artifact": "clean_sample.csv",
+                    "output_type": "cleaned_data",
+                    "output_description": "Cleaned data from sample.csv",
+                    "min_price": config['etl']['min_price'],
+                    "max_price": config['etl']['max_price']
+                },
+            )         
             pass
 
         if "data_check" in active_steps:
             ##################
             # Implement here #
             ##################
+            _ = mlflow.run(
+                os.path.join(root_path, "src", "data_check"),
+                "main",
+                parameters={
+                    "csv": "nyc_airbnb/clean_sample.csv:latest",
+                    "ref": "nyc_airbnb/clean_sample.csv:reference",
+                    "kl_threshold": config['data_check']['kl_threshold'],
+                    "min_price": config['etl']['min_price'],
+                    "max_price": config['etl']['max_price']
+                },
+            )
+           
             pass
 
         if "data_split" in active_steps:
             ##################
             # Implement here #
             ##################
+        
             pass
 
         if "train_random_forest" in active_steps:
@@ -81,6 +109,7 @@ def go(config: DictConfig):
             ##################
             # Implement here #
             ##################
+            
 
             pass
 
