@@ -104,7 +104,8 @@ def go(args):
     mlflow.sklearn.save_model(
         # YOUR CODE HERE
         sk_model = sk_pipe,
-        path = rf_storage_dir,        
+        path = rf_storage_dir,
+        signature = signature,       
         input_example = X_train.iloc[:5]
     )
     ######################################
